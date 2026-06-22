@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/plantd/',
+  base: '/',
   server: {
     port: 5173,
     proxy: {
