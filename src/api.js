@@ -1,7 +1,8 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 const jsonHeaders = { 'Content-Type': 'application/json' };
 
 async function request(path, options = {}) {
-  const res = await fetch(path, {
+  const res = await fetch(`${API_BASE}${path}`, {
     credentials: 'include',
     ...options,
     headers: { ...jsonHeaders, ...options.headers },
@@ -74,7 +75,7 @@ export const api = {
   uploadAvatar: async (file) => {
     const form = new FormData();
     form.append('file', file);
-    const res = await fetch('/api/v1/upload/avatar', {
+    const res = await fetch(`${API_BASE}/api/v1/upload/avatar`, {
       method: 'POST',
       credentials: 'include',
       body: form,
@@ -87,7 +88,7 @@ export const api = {
   uploadImage: async (file) => {
     const form = new FormData();
     form.append('file', file);
-    const res = await fetch('/api/v1/upload/image', {
+    const res = await fetch(`${API_BASE}/api/v1/upload/image`, {
       method: 'POST',
       credentials: 'include',
       body: form,
@@ -100,10 +101,11 @@ export const api = {
 
 export function imgUrl(path) {
   if (!path) return null;
-  if (path.startsWith('/avatars/')) return '/img/avatar/default.png';
+  if (path.startsWith('/avatars/')) return `${API_BASE}/img/avatar/default.png`;
   if (path.startsWith('http')) return path;
   // 兼容旧数据：/img/uuid.png → /img/post/uuid.png
   const legacy = path.match(/^\/img\/([0-9a-f-]+\.[a-z]+)$/i);
-  if (legacy) return `/img/post/${legacy[1]}`;
+  if (legacy) return `${API_BASE}/img/post/${legacy[1]}`;
+  if (path.startsWith('/img/')) return `${API_BASE}${path}`;
   return path;
 }
